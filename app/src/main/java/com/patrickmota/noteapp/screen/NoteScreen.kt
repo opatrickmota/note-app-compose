@@ -35,6 +35,7 @@ import com.patrickmota.noteapp.components.NoteButton
 import com.patrickmota.noteapp.components.NoteInputText
 import com.patrickmota.noteapp.data.NotesDataSource
 import com.patrickmota.noteapp.model.Note
+import com.patrickmota.noteapp.util.formatDate
 
 @ExperimentalComposeUiApi
 @Composable
@@ -127,7 +128,7 @@ fun NoteRow(modifier: Modifier = Modifier, note: Note, onNoteCliked: (Note) -> U
             Text(text = note.title, style = MaterialTheme.typography.subtitle2)
             Text(text = note.description, style = MaterialTheme.typography.subtitle1)
             Text(
-                text = note.entryDate,
+                text = formatDate(note.entryDate.time),
                 style = MaterialTheme.typography.caption
             )
         }

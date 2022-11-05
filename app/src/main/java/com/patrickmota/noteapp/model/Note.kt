@@ -18,5 +18,5 @@ data class Note(
     val description: String,
 
     @ColumnInfo(name = "note_entry_date")
-    val entryDate: String = Date.from(Instant.now()).toString()
+    val entryDate: Date = Date.from(Instant.now())
 )
