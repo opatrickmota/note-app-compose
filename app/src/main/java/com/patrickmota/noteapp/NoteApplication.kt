@@ -1,7 +1,9 @@
 package com.patrickmota.noteapp
 
 import android.app.Application
-import com.patrickmota.noteapp.di.appModule
+import com.patrickmota.noteapp.di.databaseModule
+import com.patrickmota.noteapp.di.repositoryModule
+import com.patrickmota.noteapp.di.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -11,7 +13,7 @@ class NoteApplication : Application() {
 
         startKoin {
             androidContext(this@NoteApplication)
-            modules(appModule)
+            modules(databaseModule, repositoryModule, viewModelModule)
         }
     }
 }

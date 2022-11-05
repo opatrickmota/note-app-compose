@@ -1,26 +1,35 @@
 package com.patrickmota.noteapp.screen
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
-import com.patrickmota.noteapp.data.NotesDataSource
+import androidx.lifecycle.viewModelScope
 import com.patrickmota.noteapp.model.Note
+import com.patrickmota.noteapp.repository.NoteRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
-class NoteViewModel : ViewModel() {
-    private var noteList = mutableStateListOf<Note>()
+class NoteViewModel(
+    private val repository: NoteRepository,
+    private val dispatcher: CoroutineDispatcher
+) : ViewModel() {
+
+    private val _noteList = MutableStateFlow<List<Note>>(emptyList())
+    val noteList = _noteList.asStateFlow()
 
     init {
-        noteList.addAll(NotesDataSource().loadNotes())
+        viewModelScope.launch(dispatcher) {
+            repository.getAllNotes().distinctUntilChanged().collect { listOfNote ->
+                if (listOfNote.isEmpty().not()) {
+                    _noteList.value = listOfNote
+                }
+            }
+        }
     }
 
-    fun addNote(note: Note) {
-        noteList.add(note)
-    }
+    fun addNote(note: Note) = viewModelScope.launch { repository.addNote(note) }
+    fun updateNote(note: Note) = viewModelScope.launch { repository.updateNote(note) }
+    fun removeNote(note: Note) = viewModelScope.launch { repository.deleteNote(note) }
 
-    fun removeNote(note: Note) {
-        noteList.remove(note)
-    }
-
-    fun getAllNotes(): List<Note> {
-        return noteList
-    }
 }

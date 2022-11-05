@@ -6,11 +6,13 @@ import com.patrickmota.noteapp.data.NoteDatabase
 import com.patrickmota.noteapp.data.NoteDatabaseDao
 import com.patrickmota.noteapp.repository.NoteRepository
 import com.patrickmota.noteapp.repository.NoteRepositoryImpl
+import com.patrickmota.noteapp.screen.NoteViewModel
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidApplication
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
-val appModule = module {
+val databaseModule = module {
     fun provideDatabase(application: Application): NoteDatabase {
         return Room.databaseBuilder(application, NoteDatabase::class.java, "notes_db")
             .fallbackToDestructiveMigration()
@@ -23,10 +25,17 @@ val appModule = module {
 
     single { provideDatabase(androidApplication()) }
     single { provideDao(get()) }
+}
 
-    single { Dispatchers.IO }
-
+val repositoryModule = module {
+    single(named("IODispatcher")) { Dispatchers.IO }
     single <NoteRepository> {
-        NoteRepositoryImpl(get(), get())
+        NoteRepositoryImpl(get(), get(named("IODispatcher")))
+    }
+}
+
+val viewModelModule = module {
+    single {
+        NoteViewModel(get(), get(named("IODispatcher")))
     }
 }

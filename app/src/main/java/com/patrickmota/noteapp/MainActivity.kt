@@ -8,15 +8,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.patrickmota.noteapp.model.Note
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.patrickmota.noteapp.screen.NoteScreen
 import com.patrickmota.noteapp.screen.NoteViewModel
 import com.patrickmota.noteapp.ui.theme.NoteAppTheme
+import org.koin.android.ext.android.get
+import org.koin.androidx.compose.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @ExperimentalComposeUiApi
 class MainActivity : ComponentActivity() {
@@ -28,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val noteViewModel: NoteViewModel by viewModels()
+                    val noteViewModel: NoteViewModel = getViewModel()
                     NotesApp(noteViewModel = noteViewModel)
                 }
             }
@@ -38,8 +40,8 @@ class MainActivity : ComponentActivity() {
 
 @ExperimentalComposeUiApi
 @Composable
-fun NotesApp(noteViewModel: NoteViewModel = viewModel()) {
-    val notesList = noteViewModel.getAllNotes()
+fun NotesApp(noteViewModel: NoteViewModel) {
+    val notesList = noteViewModel.noteList.collectAsState().value
 
     NoteScreen(
         notes = notesList,
@@ -48,5 +50,6 @@ fun NotesApp(noteViewModel: NoteViewModel = viewModel()) {
         },
         onRemoveNote = {
             noteViewModel.removeNote(it)
-        })
+        }
+    )
 }
