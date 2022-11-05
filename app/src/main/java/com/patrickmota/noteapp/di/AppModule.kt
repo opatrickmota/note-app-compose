@@ -4,6 +4,9 @@ import android.app.Application
 import androidx.room.Room
 import com.patrickmota.noteapp.data.NoteDatabase
 import com.patrickmota.noteapp.data.NoteDatabaseDao
+import com.patrickmota.noteapp.repository.NoteRepository
+import com.patrickmota.noteapp.repository.NoteRepositoryImpl
+import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 
@@ -20,4 +23,10 @@ val appModule = module {
 
     single { provideDatabase(androidApplication()) }
     single { provideDao(get()) }
+
+    single { Dispatchers.IO }
+
+    single <NoteRepository> {
+        NoteRepositoryImpl(get(), get())
+    }
 }
