@@ -70,7 +70,7 @@ fun NoteScreen(
             NoteInputText(
                 modifier = Modifier.padding(top = 9.dp, bottom = 8.dp),
                 text = title,
-                label = "Title",
+                label = "Título",
                 onTextChange = {
                     if (it.all { char -> char.isLetter() || char.isWhitespace() }) {
                         title = it
@@ -80,19 +80,19 @@ fun NoteScreen(
             NoteInputText(
                 modifier = Modifier.padding(top = 9.dp, bottom = 8.dp),
                 text = description,
-                label = "Add a note",
+                label = "Adicione uma anotação",
                 onTextChange = {
                     if (it.all { char -> char.isLetter() || char.isWhitespace() }) {
                         description = it
                     }
                 })
 
-            NoteButton(text = "Save", onClick = {
+            NoteButton(text = "Salvar", onClick = {
                 if (title.isNotEmpty() && description.isNotEmpty()) {
                     onAddNote(Note(title = title, description = description))
                     title = ""
                     description = ""
-                    Toast.makeText(context, "Note Added", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Anotação adicionada", Toast.LENGTH_SHORT).show()
                 }
             })
         }
